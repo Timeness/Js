@@ -1,0 +1,23 @@
+name: Restart Telegram Bot
+
+on:
+  workflow_run:
+    workflows:
+      - Telegram Bot
+    types:
+      - completed
+
+jobs:
+  restart-bot:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Bot Workflow
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const response = await github.actions.createWorkflowDispatch({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: "bot.yml",
+              ref: context.ref,
+            })
